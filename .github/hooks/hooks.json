@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": ".github/hooks/scripts/session-start.sh",
+        "powershell": "powershell.exe -ExecutionPolicy Bypass -Command \"& '.github\\hooks\\scripts\\session-start.ps1'\"",
+        "comment": "Log session start and verify project setup",
+        "timeoutSec": 30
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "bash": ".github/hooks/scripts/session-end.sh",
+        "powershell": "powershell.exe -ExecutionPolicy Bypass -Command \"& '.github\\hooks\\scripts\\session-end.ps1'\"",
+        "comment": "Log session end and cleanup",
+        "timeoutSec": 30
+      }
+    ],
+    "userPromptSubmitted": [
+      {
+        "type": "command",
+        "bash": ".github/hooks/scripts/log-prompt.sh",
+        "powershell": "powershell.exe -ExecutionPolicy Bypass -Command \"& '.github\\hooks\\scripts\\log-prompt.ps1'\"",
+        "comment": "Audit log all user prompts",
+        "timeoutSec": 10
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": ".github/hooks/scripts/security-check.sh",
+        "powershell": "powershell.exe -ExecutionPolicy Bypass -Command \"& '.github\\hooks\\scripts\\security-check.ps1'\"",
+        "comment": "Block dangerous commands and enforce safe file editing",
+        "timeoutSec": 15
+      },
+      {
+        "type": "command",
+        "bash": ".github/hooks/scripts/audit-tool-use.sh",
+        "powershell": "powershell.exe -ExecutionPolicy Bypass -Command \"& '.github\\hooks\\scripts\\audit-tool-use.ps1'\"",
+        "comment": "Audit log all tool invocations before execution",
+        "timeoutSec": 10
+      }
+    ],
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": ".github/hooks/scripts/post-tool-stats.sh",
+        "powershell": "powershell.exe -ExecutionPolicy Bypass -Command \"& '.github\\hooks\\scripts\\post-tool-stats.ps1'\"",
+        "comment": "Track tool execution results and statistics",
+        "timeoutSec": 10
+      }
+    ],
+    "errorOccurred": [
+      {
+        "type": "command",
+        "bash": ".github/hooks/scripts/log-error.sh",
+        "powershell": "powershell.exe -ExecutionPolicy Bypass -Command \"& '.github\\hooks\\scripts\\log-error.ps1'\"",
+        "comment": "Log errors for debugging",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

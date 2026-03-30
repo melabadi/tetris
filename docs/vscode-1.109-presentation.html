@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VS Code 1.109 Cheatsheet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --accent-subtle: #1f6feb22;
+    --green: #3fb950;
+    --purple: #bc8cff;
+    --orange: #d29922;
+    --pink: #f778ba;
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 2rem 1rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+  }
+  .header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #58a6ff, #bc8cff, #f778ba);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  .header .subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .badges { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .badge:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .badge.blue { background: #007ACC33; color: #58a6ff; border: 1px solid #007ACC55; }
+  .badge.red { background: #da363333; color: #f8514999; border: 1px solid #da363355; }
+
+  /* Sections */
+  .section {
+    margin-top: 3rem;
+    padding: 1.5rem 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .section h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section h2 .icon { font-size: 1.3rem; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  thead th {
+    text-align: left;
+    padding: 0.65rem 0.75rem;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  tbody td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #ffffff06; }
+  td strong { color: var(--accent); }
+  td a { color: var(--accent); text-decoration: none; }
+  td a:hover { text-decoration: underline; }
+  td code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: #ffffff0d;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    color: var(--purple);
+  }
+  td em { color: var(--text-muted); font-style: italic; }
+
+  /* Callout / blockquote */
+  .callout {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--accent-subtle);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+  .callout a { color: var(--accent); text-decoration: none; }
+  .callout a:hover { text-decoration: underline; }
+  .callout strong { color: var(--text); }
+
+  /* Code blocks */
+  pre {
+    margin-top: 1rem;
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: #e6edf3;
+  }
+
+  /* Details / expandable */
+  details {
+    margin-top: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  details summary {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: #ffffff06;
+    user-select: none;
+  }
+  details summary:hover { background: #ffffff0a; }
+  details[open] summary { border-bottom: 1px solid var(--border); }
+  details .inner { padding: 0.75rem 1rem; }
+  details table { font-size: 0.84rem; }
+
+  /* Diagram flow */
+  .flow {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 2;
+  }
+  .flow .agent { color: var(--accent); font-weight: 600; }
+  .flow .arrow { color: var(--text-muted); }
+
+  /* Settings block */
+  .settings-block pre {
+    background: #0d1117;
+  }
+
+  /* Shortcuts grid */
+  .shortcuts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  .shortcut {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    background: #ffffff06;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.88rem;
+  }
+  .shortcut kbd, td kbd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    background: #ffffff10;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--purple);
+  }
+
+  /* Resources */
+  .resources a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .resources a:hover { text-decoration: underline; }
+
+  /* Divider */
+  hr {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 2rem 0;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 2rem 0 1rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>🎮 VS Code 1.109 Cheatsheet</h1>
+  <p class="subtitle">January 2026 Release — Multi-Agent Development · Tetris Edition</p>
+  <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;">React 19 + TypeScript + Vite Tetris · <code>gameEngine.ts</code> (pure logic) · <code>useTetris.ts</code> (hook) · 4 components · 7 tetrominoes</p>
+  <div class="badges">
+    <a class="badge blue" href="https://code.visualstudio.com/updates/v1_109" target="_blank">📘 Release Notes — 1.109</a>
+    <a class="badge red" href="https://youtube.com/live/tAezuMSJuFs" target="_blank">▶ Watch Agent Sessions Day</a>
+  </div>
+</div>
+
+<!-- 1 · General -->
+<div class="section">
+  <h2><span class="icon">🔎</span> 1 · General</h2>
+  <table>
+    <thead><tr><th>Feature</th><th>What it does</th><th>Setting</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong><a href="https://code.visualstudio.com/updates/v1_109#_context-window-details" target="_blank" rel="noopener">Context Window</a></strong></td>
+        <td>Shows token usage breakdown in chat input</td>
+        <td>Built-in</td>
+        <td>Attach <code>gameEngine.ts</code> + <code>useTetris.ts</code> + <code>constants.ts</code> to chat, hover the bar at bottom</td>
+      </tr>
+      <tr>
+        <td><strong><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/copilot-memory" target="_blank" rel="noopener">Copilot Memory</a></strong></td>
+        <td>Remembers preferences across sessions</td>
+        <td><code>github.copilot.chat.copilotMemory.enabled</code></td>
+        <td><em>"Remember: game logic must be pure functions in gameEngine.ts, never import React there"</em> → new session: <em>"What are my code conventions?"</em></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="callout"><strong>Manage memories →</strong> <a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/copilot-memory" target="_blank" rel="noopener">github.com/settings/copilot</a></div>
+</div>
+
+<!-- 2 · Planning -->
+<div class="section">
+  <h2><span class="icon">📐</span> 2 · Planning</h2>
+  <table>
+    <thead><tr><th>Feature</th><th>What it does</th><th>Setting</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong><a href="https://code.visualstudio.com/docs/copilot/chat/chat-planning" target="_blank" rel="noopener">Plan Agent</a></strong></td>
+        <td>4-phase workflow: Discovery → Alignment → Design → Refinement</td>
+        <td>Built-in</td>
+        <td><code>/plan Add a hold-piece feature that lets the player swap the current tetromino with a held piece</code></td>
+      </tr>
+      <tr>
+        <td><strong><a href="https://code.visualstudio.com/updates/v1_109#_ask-questions-tool" target="_blank" rel="noopener">Ask Questions</a></strong></td>
+        <td>Agent asks multi-choice questions instead of guessing</td>
+        <td><code>chat.askQuestions.enabled</code></td>
+        <td><em>"Add a combo scoring system to the Tetris game"</em> — watch it ask about combo windows, multipliers, and visual feedback</td>
+      </tr>
+      <tr>
+        <td><strong><a href="https://code.visualstudio.com/updates/v1_109#_mermaid-diagrams" target="_blank" rel="noopener">Mermaid Diagrams</a></strong></td>
+        <td>Renders interactive diagrams inline in chat</td>
+        <td>Built-in</td>
+        <td><em>"Draw a state diagram for the Tetris game loop: idle → playing → paused → game over"</em></td>
+      </tr>
+      <tr>
+        <td><strong><a href="https://code.visualstudio.com/updates/v1_109#_specific-model-for-implementation" target="_blank" rel="noopener">Model per Step</a></strong></td>
+        <td>Different models for planning vs implementation</td>
+        <td><code>github.copilot.chat.implementAgent.model</code></td>
+        <td>Set to <code>"Claude Sonnet 4.5 (copilot)"</code> in Settings</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 3 · Agent Sessions -->
+<div class="section">
+  <h2><span class="icon">🤖</span> 3 · Agent Sessions</h2>
+  <table>
+    <thead><tr><th>Feature</th><th>What it does</th><th>Setting</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong><a href="https://code.visualstudio.com/updates/v1_109#_agent-sessions-welcome-page" target="_blank" rel="noopener">Welcome Page</a></strong></td>
+        <td>Shows recent agent sessions on startup</td>
+        <td><code>workbench.startupEditor</code> → <code>agentSessionsWelcomePage</code></td>
+        <td>Close &amp; reopen VS Code</td>
+      </tr>
+      <tr>
+        <td><strong><a href="https://code.visualstudio.com/updates/v1_109#_search-subagent" target="_blank" rel="noopener">Search Subagent</a></strong></td>
+        <td>Searches codebase in its own context window</td>
+        <td><code>github.copilot.chat.searchSubagent.enabled</code></td>
+        <td><em>"Find every place we call isValidPosition or check for collisions"</em></td>
+      </tr>
+      <tr>
+        <td><strong><a href="https://code.visualstudio.com/updates/v1_109#_agent-status-indicator" target="_blank" rel="noopener">Status Indicator</a></strong></td>
+        <td>Badge in command center: In-progress · Unread · Needs input</td>
+        <td><code>chat.agentsControl.enabled</code></td>
+        <td>Start an agent task, check the badge at top</td>
+      </tr>
+      <tr>
+        <td><strong><a href="https://code.visualstudio.com/updates/v1_109#_agent-session-management" target="_blank" rel="noopener">Session Management</a></strong></td>
+        <td>Local / Background / Cloud sessions, hand off between them</td>
+        <td>Built-in</td>
+        <td>Start a local session → delegate to background or cloud</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 4 · Background & Cloud Agent Delegation -->
+<div class="section">
+  <h2><span class="icon">☁️</span> 4 · Background &amp; Cloud Agent Delegation</h2>
+  <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">Hand off long-running tasks so you can keep coding locally.</p>
+  <table>
+    <thead><tr><th>Session Type</th><th>Where it runs</th><th>Best for</th><th>How to start</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Local</strong></td>
+        <td>Your machine, VS Code open</td>
+        <td>Quick edits, debugging</td>
+        <td>Default — just chat</td>
+      </tr>
+      <tr>
+        <td><strong>Background</strong></td>
+        <td>Your machine, VS Code can close</td>
+        <td>Builds, test suites, refactors</td>
+        <td>Click <strong>⋯</strong> on a session → <strong>Continue in Background</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Cloud (Coding Agent)</strong></td>
+        <td>GitHub-hosted</td>
+        <td>Large features, multi-file changes, CI-verified PRs</td>
+        <td>Assign a GitHub Issue, or <strong>⋯</strong> → <strong>Continue in Cloud</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size:1rem; margin: 1.5rem 0 0.75rem; color:var(--text);">Demo: Delegate to Background</h3>
+  <div class="callout">
+    <strong>1.</strong> Start a local session: <em>"Add a hold-piece feature — press C to swap the current tetromino with a held piece"</em><br>
+    <strong>2.</strong> While the agent plans, click <strong>⋯</strong> → <strong>Continue in Background</strong><br>
+    <strong>3.</strong> Close the chat panel — the agent keeps working<br>
+    <strong>4.</strong> The status badge shows progress; click it to resume when done
+  </div>
+
+  <h3 style="font-size:1rem; margin: 1.5rem 0 0.75rem; color:var(--text);">Demo: Delegate to Cloud (Copilot Coding Agent)</h3>
+  <div class="callout">
+    <strong>1.</strong> Create a GitHub Issue: <em>"Add high-score persistence using localStorage"</em><br>
+    <strong>2.</strong> Assign <strong>Copilot</strong> to the issue<br>
+    <strong>3.</strong> Copilot creates a branch, implements the feature, runs CI (<code>lint</code> + <code>type-check</code> + <code>build</code>), and opens a PR<br>
+    <strong>4.</strong> Review the PR — Copilot iterates on your feedback
+  </div>
+
+  <div class="callout" style="margin-top:1rem;"><strong>Tip:</strong> Cloud sessions respect <code>.github/copilot-instructions.md</code> — your Tetris architecture rules (pure logic in <code>gameEngine.ts</code>, state in <code>useTetris.ts</code>) are enforced automatically.</div>
+</div>
+
+<!-- 5 · Agent Hooks -->
+<div class="section">
+  <h2><span class="icon">🪝</span> 5 · Agent Hooks</h2>
+
+  <h3 style="font-size:1rem; margin-bottom:0.75rem; color:var(--text);">This Repo's Hooks</h3>
+  <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:0.5rem;">
+    This project has a full hook suite in <a href="https://code.visualstudio.com/updates/v1_109#_agent-hooks" target="_blank" rel="noopener" style="color:var(--accent);"><code>.github/hooks/hooks.json</code></a> that fires on every agent action:
+  </p>
+
+<pre>{
+  "sessionStart":          [{ "powershell": "session-start.ps1" }],
+  "sessionEnd":            [{ "powershell": "session-end.ps1" }],
+  "userPromptSubmitted":   [{ "powershell": "log-prompt.ps1" }],
+  "preToolUse":            [
+    { "powershell": "security-check.ps1", "comment": "Block dangerous commands" },
+    { "powershell": "audit-tool-use.ps1", "comment": "Audit all tool invocations" }
+  ],
+  "postToolUse":           [{ "powershell": "post-tool-stats.ps1" }],
+  "errorOccurred":         [{ "powershell": "log-error.ps1" }]
+}</pre>
+
+  <div class="callout"><strong>Try:</strong> Ask the agent to edit <code>Board.tsx</code> — watch the terminal show the security check and audit log fire automatically.</div>
+
+  <h3 style="font-size:1rem; margin: 1.5rem 0 0.75rem; color:var(--text);">Adding a Lint-on-Edit Hook</h3>
+  <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:0.5rem;">Want to auto-lint after every file edit? Add this to the <code>postToolUse</code> array:</p>
+
+<pre>{
+  "type": "command",
+  "bash": "npx eslint --no-warn-ignored ${TOOL_ARGS_FILE_PATH} || true",
+  "powershell": "npx eslint --no-warn-ignored $env:TOOL_ARGS_FILE_PATH; exit 0",
+  "timeoutSec": 30
+}</pre>
+</div>
+
+<!-- 6 · Custom Prompts -->
+<div class="section">
+  <h2><span class="icon">🧩</span> 6 · Custom Prompts (Slash Commands)</h2>
+  <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">Type these in chat to invoke structured workflows from <code>.github/prompts/</code>:</p>
+  <table>
+    <thead><tr><th>Prompt</th><th>File</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><kbd>/add-feature</kbd></td><td><code>add-feature.prompt.md</code></td><td>Guides adding a new Tetris feature following architecture rules</td></tr>
+      <tr><td><kbd>/fix-bug</kbd></td><td><code>fix-bug.prompt.md</code></td><td>Structured debugging with file-by-category checklist</td></tr>
+      <tr><td><kbd>/refactor</kbd></td><td><code>refactor.prompt.md</code></td><td>Refactoring with separation-of-concerns enforcement</td></tr>
+      <tr><td><kbd>/write-tests</kbd></td><td><code>write-tests.prompt.md</code></td><td>Test generation targeting all 11 <code>gameEngine.ts</code> functions</td></tr>
+      <tr><td><kbd>/code-review</kbd></td><td><code>code-review.prompt.md</code></td><td>Architecture, TypeScript, quality, and performance review</td></tr>
+      <tr><td><kbd>/demo-hold-piece</kbd></td><td><code>demo-hold-piece.prompt.md</code></td><td>🎯 Demo: Hold-piece feature (great for <code>/plan</code> and agent workflows)</td></tr>
+      <tr><td><kbd>/demo-high-scores</kbd></td><td><code>demo-high-scores.prompt.md</code></td><td>🎯 Demo: localStorage high scores (great for cloud/background delegation)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size:1rem; margin: 1.5rem 0 0.75rem; color:var(--text);">Demo Prompts to Try</h3>
+<pre>/add-feature Add a "hold piece" feature — pressing C swaps the current piece with a held piece
+
+/fix-bug The T-piece clips through the right wall when rotated at column 9
+
+/write-tests Write tests for clearLines() covering 0, 1, 2, 3, and 4 line clears
+
+/refactor Extract the keyboard handling from useTetris.ts into a separate useKeyboard hook
+
+/code-review Review the collision detection logic in gameEngine.ts
+
+/demo-hold-piece              ← Pre-built demo: walks through hold-piece feature end-to-end
+/demo-high-scores             ← Pre-built demo: walks through localStorage high scores</pre>
+</div>
+
+<!-- 7 · Message Steering -->
+<div class="section">
+  <h2><span class="icon">💬</span> 7 · Message Steering &amp; Queueing</h2>
+  <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
+    Send follow-up messages while the agent is still working — <a href="https://code.visualstudio.com/docs/copilot/chat/chat-sessions#_send-messages-while-a-request-is-running" target="_blank" rel="noopener" style="color:var(--accent);">docs</a>.
+  </p>
+  <table>
+    <thead><tr><th>Action</th><th>When to use</th><th>What happens</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Queue</strong></td><td><em>"Also add touch support for the hold feature after you're done"</em></td><td>Waits, sends after current response</td></tr>
+      <tr><td><strong>Steer</strong></td><td><em>"Actually, put the hold-piece logic in gameEngine.ts first"</em></td><td>Yields current tool, processes your message</td></tr>
+      <tr><td><strong>Stop &amp; Send</strong></td><td><em>"Forget hold-piece, add a speed-up power-up instead"</em></td><td>Cancels current request entirely</td></tr>
+    </tbody>
+  </table>
+  <div class="callout" style="margin-top:1rem;">
+    <strong>Settings:</strong> <code>chat.requestQueuing.enabled</code> · <code>chat.requestQueuing.defaultAction</code> → <code>"steer"</code><br><br>
+    <strong>Try:</strong> Ask the agent to refactor all components. While it works, send <em>"Start with Board.tsx first"</em> → choose <strong>Steer</strong>.
+  </div>
+</div>
+
+<!-- Settings -->
+<div class="section settings-block">
+  <h2><span class="icon">⚙️</span> Quick-Copy Settings</h2>
+  <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:0.75rem;">Paste into <code>settings.json</code> to enable everything at once:</p>
+<pre>{
+  "github.copilot.chat.copilotMemory.enabled": true,
+  "chat.askQuestions.enabled": true,
+  "github.copilot.chat.implementAgent.model": "Claude Sonnet 4.5 (copilot)",
+  "inlineChat.defaultModel": "Claude Sonnet 4.5 (copilot)",
+  "workbench.startupEditor": "agentSessionsWelcomePage",
+  "github.copilot.chat.searchSubagent.enabled": true,
+  "chat.agentsControl.enabled": true,
+  "chat.agentsControl.clickBehavior": "cycle",
+  "chat.requestQueuing.enabled": true,
+  "chat.requestQueuing.defaultAction": "steer"
+}</pre>
+</div>
+
+<!-- Shortcuts -->
+<div class="section">
+  <h2><span class="icon">⌨️</span> Shortcuts</h2>
+  <div class="shortcuts">
+    <div class="shortcut"><span>Plan Agent</span><kbd>/plan</kbd></div>
+    <div class="shortcut"><span>New Local Chat</span><kbd>Ctrl+Shift+N</kbd></div>
+    <div class="shortcut"><span>Settings</span><kbd>Ctrl+,</kbd></div>
+    <div class="shortcut"><span>Command Palette</span><kbd>Ctrl+Shift+P</kbd></div>
+  </div>
+</div>
+
+<!-- Demo Flow -->
+<div class="section">
+  <h2><span class="icon">🎯</span> Demo Flow</h2>
+  <table>
+    <thead><tr><th>#</th><th>Feature</th><th>What to show</th><th>Prompt</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Context Window</td><td>Attach <code>gameEngine.ts</code> + <code>useTetris.ts</code>, hover token bar</td><td>—</td></tr>
+      <tr><td>2</td><td>Memory</td><td>Store a convention, recall in new session</td><td><em>"Remember: game logic stays pure in gameEngine.ts"</em></td></tr>
+      <tr><td>3</td><td><code>/plan</code></td><td>Walk through 4-phase planning workflow</td><td><code>/plan Add a hold-piece feature</code></td></tr>
+      <tr><td>4</td><td>Ask Questions</td><td>Watch agent ask clarifying questions</td><td><em>"Add a combo scoring system"</em></td></tr>
+      <tr><td>5</td><td>Mermaid</td><td>Render a game-state diagram inline</td><td><em>"Draw a state diagram for the Tetris game loop"</em></td></tr>
+      <tr><td>6</td><td>Custom Prompts</td><td>Use a slash command from <code>.github/prompts/</code></td><td><code>/write-tests Write tests for clearLines()</code></td></tr>
+      <tr><td>7</td><td>Agent Hooks</td><td>Edit a file, watch security + audit fire</td><td><em>"Rename BOARD_WIDTH to COLUMNS in constants.ts"</em></td></tr>
+      <tr><td>8</td><td>Background Agent</td><td>Delegate a task to run in background</td><td><em>"Add localStorage high scores"</em> → ⋯ → Background</td></tr>
+      <tr><td>9</td><td>Cloud Agent</td><td>Show Copilot Coding Agent on a GitHub Issue</td><td>Assign Copilot to an issue</td></tr>
+      <tr><td>10</td><td>Steering</td><td>Redirect agent mid-task</td><td>Start refactor → steer to <em>"Start with Board.tsx"</em></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Project Quick Reference -->
+<div class="section">
+  <h2><span class="icon">📁</span> Project Quick Reference</h2>
+<pre>src/
+├── constants.ts          # 7 tetrominoes, 10×20 board, scoring tables
+├── gameEngine.ts         # Pure functions: collision, rotation, line clearing
+├── hooks/useTetris.ts    # Game state, keyboard handling, game loop
+├── components/
+│   ├── Board.tsx          # 10×20 grid renderer
+│   ├── NextPiece.tsx      # Upcoming piece preview
+│   ├── ScoreBoard.tsx     # Score / level / lines display
+│   └── Controls.tsx       # Key hints + mobile touch buttons
+├── App.tsx                # Orchestrates components + overlays
+└── App.css                # All game styles
+
+.github/
+├── copilot-instructions.md   # Architecture rules for AI agents
+├── prompts/                   # 7 custom slash commands (5 standard + 2 demos)
+├── hooks/hooks.json           # 6 agent lifecycle hooks
+└── workflows/                 # CI + GitHub Pages deploy</pre>
+</div>
+
+<!-- Resources -->
+<div class="section resources">
+  <h2><span class="icon">📚</span> Resources</h2>
+  <table>
+    <thead><tr><th>Link</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><a href="https://code.visualstudio.com/updates/v1_109" target="_blank" rel="noopener">VS Code 1.109 Release Notes</a></td><td>Full release notes</td></tr>
+      <tr><td><a href="https://youtube.com/live/tAezuMSJuFs" target="_blank" rel="noopener">Agent Sessions Day</a></td><td>YouTube recording — Feb 19, 2026</td></tr>
+      <tr><td><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/copilot-memory" target="_blank" rel="noopener">Copilot Memory</a></td><td>Memory docs on GitHub</td></tr>
+      <tr><td><a href="https://code.visualstudio.com/docs/copilot/chat/chat-planning" target="_blank" rel="noopener">Plan Agent</a></td><td>Planning workflow docs</td></tr>
+      <tr><td><a href="https://code.visualstudio.com/docs/copilot/chat/chat-sessions#_send-messages-while-a-request-is-running" target="_blank" rel="noopener">Message Steering</a></td><td>Queue &amp; steer docs</td></tr>
+      <tr><td><a href="https://code.visualstudio.com/updates/v1_109#_agent-hooks" target="_blank" rel="noopener">Agent Hooks</a></td><td>Hook configuration reference</td></tr>
+      <tr><td><a href="https://docs.github.com/en/copilot/using-github-copilot/using-copilot-coding-agent" target="_blank" rel="noopener">Copilot Coding Agent</a></td><td>Cloud agent docs</td></tr>
+      <tr><td><a href="https://code.visualstudio.com/docs/copilot/chat/chat-sessions" target="_blank" rel="noopener">Background Sessions</a></td><td>Session management docs</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Footer -->
+<div class="footer">VS Code 1.109 — January 2026 · Tetris Edition 🎮</div>
+
+</body>
+</html>
